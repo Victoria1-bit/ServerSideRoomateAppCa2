@@ -21,13 +21,14 @@ class ChoreController extends Controller
                 ->get();
         }
 
-        return view('chores.index', compact('chores'));
+        return view()->file(resource_path('views/chores/index.blade.php'), compact('chores'));
     }
 
     public function create()
     {
         $users = User::all();
-        return view('chores.create', compact('users'));
+
+        return view()->file(resource_path('views/chores/create.blade.php'), compact('users'));
     }
 
     public function store(Request $request)
@@ -49,7 +50,10 @@ class ChoreController extends Controller
 
     public function complete(Chore $chore)
     {
-        $chore->update(['status' => 'completed']);
+        $chore->update([
+            'status' => 'completed',
+        ]);
+
         return redirect()->route('chores.index');
     }
 }

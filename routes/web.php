@@ -1,20 +1,19 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ChoreController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('chores.index');
 });
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/dashboard', function () {
+    return redirect()->route('chores.index');
+})->name('dashboard');
 
-    Route::resource('chores', ChoreController::class);
-
-    Route::patch('/chores/{chore}/complete', [ChoreController::class, 'complete'])
-        ->name('chores.complete');
-});
+Route::get('/chores', [ChoreController::class, 'index'])->name('chores.index');
+Route::get('/chores/create', [ChoreController::class, 'create'])->name('chores.create');
+Route::post('/chores', [ChoreController::class, 'store'])->name('chores.store');
+Route::patch('/chores/{chore}/complete', [ChoreController::class, 'complete'])->name('chores.complete');
 
 require __DIR__.'/auth.php';
