@@ -39,6 +39,28 @@ class ChoreController extends Controller
         return redirect()->route('chores.index')->with('success', 'Chore created successfully.');
     }
 
+    public function edit(Chore $chore)
+    {
+        $users = User::all();
+
+        return view()->file(resource_path('views/chores/edit.blade.php'), compact('chore', 'users'));
+    }
+
+    public function update(Request $request, Chore $chore)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'assigned_to' => 'required|exists:users,id',
+        ]);
+
+        $chore->update([
+            'title' => $request->title,
+            'assigned_to' => $request->assigned_to,
+        ]);
+
+        return redirect()->route('chores.index')->with('success', 'Chore updated successfully.');
+    }
+
     public function complete(Chore $chore)
     {
         $chore->update([

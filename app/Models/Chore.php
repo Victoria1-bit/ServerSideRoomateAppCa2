@@ -11,7 +11,6 @@ class Chore extends Model
 
     protected $fillable = [
         'title',
-        'description',
         'assigned_to',
         'assigned_by',
         'status',

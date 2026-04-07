@@ -21,25 +21,32 @@
                 <p><strong>Assigned to:</strong> {{ $chore->assignedUser->name ?? 'N/A' }}</p>
                 <p><strong>Assigned by:</strong> {{ $chore->assignedByUser->name ?? 'N/A' }}</p>
 
-                @if($chore->status !== 'completed')
-                    <form action="{{ route('chores.complete', $chore) }}" method="POST">
+                <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px;">
+                    <a href="{{ route('chores.edit', $chore) }}"
+                       style="padding: 8px 12px; background: #f59e0b; color: white; text-decoration: none; border-radius: 6px;">
+                        Edit
+                    </a>
+
+                    @if($chore->status !== 'completed')
+                        <form action="{{ route('chores.complete', $chore) }}" method="POST">
+                            @csrf
+                            @method('PATCH')
+                            <button type="submit"
+                                style="padding: 8px 12px; background: #16a34a; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                                Mark Complete
+                            </button>
+                        </form>
+                    @endif
+
+                    <form action="{{ route('chores.destroy', $chore) }}" method="POST" onsubmit="return confirm('Delete this chore?');">
                         @csrf
-                        @method('PATCH')
+                        @method('DELETE')
                         <button type="submit"
-                            style="margin-top:10px; padding:8px 12px; background:#16a34a; color:white; border:none; border-radius:6px;">
-                            Mark Complete
+                            style="padding: 8px 12px; background: #dc2626; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                            Delete
                         </button>
                     </form>
-                @endif
-
-                <form action="{{ route('chores.destroy', $chore) }}" method="POST" style="margin-top:10px;">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit"
-                        style="padding:8px 12px; background:#dc2626; color:white; border:none; border-radius:6px;">
-                        Delete
-                    </button>
-                </form>
+                </div>
             </div>
         @empty
             <p>No chores found.</p>
