@@ -18,14 +18,23 @@
 
             <div style="margin-bottom: 15px;">
                 <label style="display: block; margin-bottom: 5px;">Title</label>
-                <input type="text" name="title" value="{{ old('title', $chore->title) }}" required
-                    style="width: 100%; max-width: 400px; padding: 8px; border: 1px solid #ccc; border-radius: 6px;">
+                <input
+                    type="text"
+                    name="title"
+                    value="{{ old('title', $chore->title) }}"
+                    required
+                    maxlength="255"
+                    style="width: 100%; max-width: 400px; padding: 8px; border: 1px solid #ccc; border-radius: 6px;"
+                >
             </div>
 
             <div style="margin-bottom: 15px;">
                 <label style="display: block; margin-bottom: 5px;">Assign To</label>
-                <select name="assigned_to" required
-                    style="width: 100%; max-width: 400px; padding: 8px; border: 1px solid #ccc; border-radius: 6px;">
+                <select
+                    name="assigned_to"
+                    required
+                    style="width: 100%; max-width: 400px; padding: 8px; border: 1px solid #ccc; border-radius: 6px;"
+                >
                     @foreach($users as $user)
                         <option value="{{ $user->id }}" {{ old('assigned_to', $chore->assigned_to) == $user->id ? 'selected' : '' }}>
                             {{ $user->name }}
@@ -34,8 +43,10 @@
                 </select>
             </div>
 
-            <button type="submit"
-                style="padding: 10px 14px; background: #f59e0b; color: white; border: none; border-radius: 6px; cursor: pointer;">
+            <button
+                type="submit"
+                style="padding: 10px 14px; background: #f59e0b; color: white; border: none; border-radius: 6px; cursor: pointer;"
+            >
                 Update Chore
             </button>
         </form>
