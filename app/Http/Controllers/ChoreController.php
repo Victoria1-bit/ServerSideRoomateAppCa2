@@ -74,6 +74,6 @@ class ChoreController extends Controller
     {
         $chore->delete();
 
-        return redirect()->route('chores.index')->with('success', 'Chore deleted.');
+        return redirect()->route('chores.index')->with('success', 'Chore deleted successfully.');
     }
 }
