@@ -10,16 +10,7 @@ class ChoreController extends Controller
 {
     public function index()
     {
-        $user = auth()->user();
-
-        if ($user->role === 'admin') {
-            $chores = Chore::with(['assignedUser', 'assignedByUser'])->latest()->get();
-        } else {
-            $chores = Chore::with(['assignedUser', 'assignedByUser'])
-                ->where('assigned_to', $user->id)
-                ->latest()
-                ->get();
-        }
+        $chores = Chore::with(['assignedUser', 'assignedByUser'])->latest()->get();
 
         return view()->file(resource_path('views/chores/index.blade.php'), compact('chores'));
     }
@@ -48,30 +39,6 @@ class ChoreController extends Controller
         return redirect()->route('chores.index')->with('success', 'Chore created successfully.');
     }
 
-    public function edit(Chore $chore)
-    {
-        $users = User::all();
-
-        return view()->file(resource_path('views/chores/edit.blade.php'), compact('chore', 'users'));
-    }
-
-    public function update(Request $request, Chore $chore)
-    {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'assigned_to' => 'required|exists:users,id',
-            'status' => 'required|in:pending,completed',
-        ]);
-
-        $chore->update([
-            'title' => $request->title,
-            'assigned_to' => $request->assigned_to,
-            'status' => $request->status,
-        ]);
-
-        return redirect()->route('chores.index')->with('success', 'Chore updated successfully.');
-    }
-
     public function complete(Chore $chore)
     {
         $chore->update([
@@ -85,6 +52,6 @@ class ChoreController extends Controller
     {
         $chore->delete();
 
-        return redirect()->route('chores.index')->with('success', 'Chore deleted successfully.');
+        return redirect()->route('chores.index')->with('success', 'Chore deleted.');
     }
 }
