@@ -33,6 +33,10 @@ class ChoreController extends Controller
 
     public function store(Request $request)
     {
+        if (auth()->user()->role !== 'admin') {
+            abort(403, 'Only admins can create chores.');
+        }
+
         $request->validate([
             'title' => 'required|string|max:255',
             'assigned_to' => 'required|exists:users,id',
@@ -50,6 +54,10 @@ class ChoreController extends Controller
 
     public function edit(Chore $chore)
     {
+        if (auth()->user()->role !== 'admin') {
+            abort(403, 'Only admins can edit chores.');
+        }
+
         $users = User::all();
 
         return view()->file(resource_path('views/chores/edit.blade.php'), compact('chore', 'users'));
@@ -57,6 +65,10 @@ class ChoreController extends Controller
 
     public function update(Request $request, Chore $chore)
     {
+        if (auth()->user()->role !== 'admin') {
+            abort(403, 'Only admins can update chores.');
+        }
+
         $request->validate([
             'title' => 'required|string|max:255',
             'assigned_to' => 'required|exists:users,id',
@@ -72,6 +84,12 @@ class ChoreController extends Controller
 
     public function complete(Chore $chore)
     {
+        $user = auth()->user();
+
+        if ($user->role !== 'admin' && $chore->assigned_to !== $user->id) {
+            abort(403, 'You can only complete your own chores.');
+        }
+
         $chore->update([
             'status' => 'completed',
         ]);
@@ -81,6 +99,10 @@ class ChoreController extends Controller
 
     public function destroy(Chore $chore)
     {
+        if (auth()->user()->role !== 'admin') {
+            abort(403, 'Only admins can delete chores.');
+        }
+
         $chore->delete();
 
         return redirect()->route('chores.index')->with('success', 'Chore deleted successfully.');
