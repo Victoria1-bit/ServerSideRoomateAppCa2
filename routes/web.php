@@ -38,4 +38,4 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/chores/{chore}', [ChoreController::class, 'destroy'])->name('chores.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__.'/auth.php'; 
