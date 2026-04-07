@@ -52,4 +52,4 @@
             <p>No chores found.</p>
         @endforelse
     </div>
-</x-app-layout>
+</x-app-layout>  fghjkl;
