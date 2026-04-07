@@ -10,7 +10,16 @@ class ChoreController extends Controller
 {
     public function index()
     {
-        $chores = Chore::with(['assignedUser', 'assignedByUser'])->latest()->get();
+        $user = auth()->user();
+
+        if ($user->role === 'admin') {
+            $chores = Chore::with(['assignedUser', 'assignedByUser'])->latest()->get();
+        } else {
+            $chores = Chore::with(['assignedUser', 'assignedByUser'])
+                ->where('assigned_to', $user->id)
+                ->latest()
+                ->get();
+        }
 
         return view()->file(resource_path('views/chores/index.blade.php'), compact('chores'));
     }
