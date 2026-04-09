@@ -8,10 +8,12 @@
             </div>
         @endif
 
-        <a href="{{ route('chores.create') }}"
-           style="display: inline-block; margin-bottom: 20px; padding: 10px 14px; background: #2563eb; color: white; text-decoration: none; border-radius: 6px;">
-            + Create Chore
-        </a>
+        @if(auth()->user()->role === 'admin')
+            <a href="{{ route('chores.create') }}"
+               style="display: inline-block; margin-bottom: 20px; padding: 10px 14px; background: #2563eb; color: white; text-decoration: none; border-radius: 6px;">
+                + Create Chore
+            </a>
+        @endif
 
         @forelse($chores as $chore)
             <div style="margin-bottom: 15px; padding: 15px; border: 1px solid #ccc; border-radius: 8px; background: white;">
@@ -22,10 +24,12 @@
                 <p><strong>Assigned by:</strong> {{ $chore->assignedByUser->name ?? 'N/A' }}</p>
 
                 <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px;">
-                    <a href="{{ route('chores.edit', $chore) }}"
-                       style="padding: 8px 12px; background: #f59e0b; color: white; text-decoration: none; border-radius: 6px;">
-                        Edit
-                    </a>
+                    @if(auth()->user()->role === 'admin')
+                        <a href="{{ route('chores.edit', $chore) }}"
+                           style="padding: 8px 12px; background: #f59e0b; color: white; text-decoration: none; border-radius: 6px;">
+                            Edit
+                        </a>
+                    @endif
 
                     @if($chore->status !== 'completed')
                         <form action="{{ route('chores.complete', $chore) }}" method="POST">
@@ -38,14 +42,16 @@
                         </form>
                     @endif
 
-                    <form action="{{ route('chores.destroy', $chore) }}" method="POST" onsubmit="return confirm('Delete this chore?');">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit"
-                            style="padding: 8px 12px; background: #dc2626; color: white; border: none; border-radius: 6px; cursor: pointer;">
-                            Delete
-                        </button>
-                    </form>
+                    @if(auth()->user()->role === 'admin')
+                        <form action="{{ route('chores.destroy', $chore) }}" method="POST" onsubmit="return confirm('Delete this chore?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit"
+                                style="padding: 8px 12px; background: #dc2626; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                                Delete
+                            </button>
+                        </form>
+                    @endif
                 </div>
             </div>
         @empty
