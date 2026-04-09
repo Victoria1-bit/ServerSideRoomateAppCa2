@@ -4,14 +4,11 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Http\Controllers\ChoreController;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
-    return redirect()->route('chores.index');
+    return redirect()->route('dashboard');
 });
-
-Route::get('/dashboard', function () {
-    return redirect()->route('chores.index');
-})->name('dashboard');
 
 Route::post('/guest-login', function () {
     $guest = User::firstOrCreate(
@@ -25,10 +22,12 @@ Route::post('/guest-login', function () {
 
     Auth::login($guest);
 
-    return redirect()->route('chores.index');
+    return redirect()->route('dashboard');
 })->name('guest.login');
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
     Route::get('/chores', [ChoreController::class, 'index'])->name('chores.index');
     Route::get('/chores/create', [ChoreController::class, 'create'])->name('chores.create');
     Route::post('/chores', [ChoreController::class, 'store'])->name('chores.store');
