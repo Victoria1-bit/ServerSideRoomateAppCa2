@@ -1,84 +1,27 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Dashboard
-        </h2>
-    </x-slot>
+    <div style="padding: 20px;">
+        <h1 style="font-size: 30px; font-weight: bold; margin-bottom: 20px;">Dashboard</h1>
 
-    <div class="py-6">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                <div class="bg-white p-6 shadow rounded-lg">
-                    <h3 class="text-lg font-bold">Total Chores</h3>
-                    <p class="text-2xl mt-2">{{ $totalChores }}</p>
-                </div>
-
-                <div class="bg-white p-6 shadow rounded-lg">
-                    <h3 class="text-lg font-bold">Completed Chores</h3>
-                    <p class="text-2xl mt-2">{{ $completedChores }}</p>
-                </div>
-
-                <div class="bg-white p-6 shadow rounded-lg">
-                    <h3 class="text-lg font-bold">Pending Chores</h3>
-                    <p class="text-2xl mt-2">{{ $pendingChores }}</p>
-                </div>
+        <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 30px;">
+            <div style="flex: 1; min-width: 200px; padding: 20px; border: 1px solid #ccc; border-radius: 8px; background: white;">
+                <h2 style="font-size: 18px; margin-bottom: 10px;">Total Chores</h2>
+                <p style="font-size: 28px; font-weight: bold;">{{ $totalChores }}</p>
             </div>
 
-            <div class="bg-white p-6 shadow rounded-lg mb-6">
-                <h3 class="text-lg font-bold mb-4">Recent Chores</h3>
-
-                @if($chores->count())
-                    <table class="w-full border">
-                        <thead>
-                            <tr class="bg-gray-100">
-                                <th class="p-2 border">Title</th>
-                                <th class="p-2 border">Status</th>
-                                <th class="p-2 border">Assigned To</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($chores as $chore)
-                                <tr>
-                                    <td class="p-2 border">{{ $chore->title }}</td>
-                                    <td class="p-2 border">{{ $chore->status }}</td>
-                                    <td class="p-2 border">{{ $chore->assignedUser->name ?? 'N/A' }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                @else
-                    <p>No chores found.</p>
-                @endif
+            <div style="flex: 1; min-width: 200px; padding: 20px; border: 1px solid #ccc; border-radius: 8px; background: white;">
+                <h2 style="font-size: 18px; margin-bottom: 10px;">Completed</h2>
+                <p style="font-size: 28px; font-weight: bold; color: green;">{{ $completedChores }}</p>
             </div>
 
-            <div class="bg-white p-6 shadow rounded-lg">
-                <h3 class="text-lg font-bold mb-4">Recent Expenses</h3>
-
-                @if($expenses->count())
-                    <table class="w-full border">
-                        <thead>
-                            <tr class="bg-gray-100">
-                                <th class="p-2 border">Title</th>
-                                <th class="p-2 border">Amount</th>
-                                <th class="p-2 border">Added By</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($expenses as $expense)
-                                <tr>
-                                    <td class="p-2 border">{{ $expense->title }}</td>
-                                    <td class="p-2 border">€{{ number_format($expense->amount, 2) }}</td>
-                                    <td class="p-2 border">{{ $expense->user->name ?? 'N/A' }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                @else
-                    <p>No expenses found.</p>
-                @endif
+            <div style="flex: 1; min-width: 200px; padding: 20px; border: 1px solid #ccc; border-radius: 8px; background: white;">
+                <h2 style="font-size: 18px; margin-bottom: 10px;">Pending</h2>
+                <p style="font-size: 28px; font-weight: bold; color: #d97706;">{{ $pendingChores }}</p>
             </div>
-
         </div>
+
+        <a href="{{ route('chores.index') }}"
+           style="display: inline-block; padding: 10px 14px; background: #2563eb; color: white; text-decoration: none; border-radius: 6px;">
+            View Chores
+        </a>
     </div>
 </x-app-layout>
