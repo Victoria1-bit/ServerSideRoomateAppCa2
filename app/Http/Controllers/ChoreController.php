@@ -88,6 +88,12 @@ class ChoreController extends Controller
 
     public function complete(Chore $chore)
     {
+        $user = auth()->user();
+
+        if ($user->role !== 'admin' && $chore->assigned_to !== $user->id) {
+            abort(403, 'You can only complete your own chores.');
+        }
+
         $chore->update([
             'status' => 'completed',
         ]);
