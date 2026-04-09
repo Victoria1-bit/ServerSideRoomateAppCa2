@@ -21,27 +21,4 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
-
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
-
-    public function assignedChores()
-    {
-        return $this->hasMany(Chore::class, 'assigned_to');
-    }
-
-    public function createdChores()
-    {
-        return $this->hasMany(Chore::class, 'assigned_by');
-    }
-
-    public function expenses()
-    {
-        return $this->hasMany(Expense::class, 'created_by');
-    }
 }
