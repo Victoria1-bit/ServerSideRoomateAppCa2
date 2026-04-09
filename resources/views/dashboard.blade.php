@@ -25,24 +25,28 @@
                 View Chores
             </a>
 
-            <a href="{{ route('chores.create') }}"
-               style="display: inline-block; padding: 10px 14px; background: #16a34a; color: white; text-decoration: none; border-radius: 6px;">
-                Add Chore
-            </a>
+            @if(auth()->user()->isAdmin())
+                <a href="{{ route('chores.create') }}"
+                   style="display: inline-block; padding: 10px 14px; background: #16a34a; color: white; text-decoration: none; border-radius: 6px;">
+                    Add Chore
+                </a>
+            @endif
         </div>
 
         <div style="padding: 20px; border: 1px solid #ccc; border-radius: 8px; background: white;">
             <h2 style="font-size: 22px; font-weight: bold; margin-bottom: 15px;">Recent Chores</h2>
 
-            @forelse($recentChores as $chore)
-                <div style="padding: 12px 0; border-bottom: 1px solid #eee;">
-                    <h3 style="margin: 0 0 5px 0;">{{ $chore->title }}</h3>
-                    <p style="margin: 0;"><strong>Status:</strong> {{ $chore->status }}</p>
-                    <p style="margin: 0;"><strong>Assigned to:</strong> {{ $chore->assignedUser->name ?? 'N/A' }}</p>
-                </div>
-            @empty
+            @if($recentChores->count())
+                @foreach($recentChores as $chore)
+                    <div style="padding: 12px 0; border-bottom: 1px solid #eee;">
+                        <h3 style="margin: 0 0 5px 0;">{{ $chore->title }}</h3>
+                        <p style="margin: 0;"><strong>Status:</strong> {{ $chore->status }}</p>
+                        <p style="margin: 0;"><strong>Assigned to:</strong> {{ $chore->assignedUser->name ?? 'N/A' }}</p>
+                    </div>
+                @endforeach
+            @else
                 <p>No recent chores found.</p>
-            @endforelse
+            @endif
         </div>
     </div>
 </x-app-layout>

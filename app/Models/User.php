@@ -21,4 +21,9 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+
+    public function isAdmin()
+    {
+        return strtolower($this->role) === 'admin';
+    }
 }
