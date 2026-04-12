@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Http\Controllers\ChoreController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ExpenseController;  // ← ADD THIS
 use App\Http\Controllers\ProfileController;
 
 Route::get('/', function () {
@@ -36,6 +37,14 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/chores/{chore}', [ChoreController::class, 'update'])->name('chores.update');
     Route::patch('/chores/{chore}/complete', [ChoreController::class, 'complete'])->name('chores.complete');
     Route::delete('/chores/{chore}', [ChoreController::class, 'destroy'])->name('chores.destroy');
+
+    // ← ADD THESE
+    Route::get('/expenses', [ExpenseController::class, 'index'])->name('expenses.index');
+    Route::get('/expenses/create', [ExpenseController::class, 'create'])->name('expenses.create');
+    Route::post('/expenses', [ExpenseController::class, 'store'])->name('expenses.store');
+    Route::get('/expenses/{expense}/edit', [ExpenseController::class, 'edit'])->name('expenses.edit');
+    Route::put('/expenses/{expense}', [ExpenseController::class, 'update'])->name('expenses.update');
+    Route::delete('/expenses/{expense}', [ExpenseController::class, 'destroy'])->name('expenses.destroy');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
