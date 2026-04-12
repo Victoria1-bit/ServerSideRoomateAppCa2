@@ -4,12 +4,12 @@
 
         <div>
             <label>Name</label>
-            <input type="text" name="name" value="{{ old('name') }}" required autofocus class="block mt-1 w-full">
+            <input type="text" name="name" required class="block mt-1 w-full">
         </div>
 
         <div class="mt-4">
             <label>Email</label>
-            <input type="email" name="email" value="{{ old('email') }}" required class="block mt-1 w-full">
+            <input type="email" name="email" required class="block mt-1 w-full">
         </div>
 
         <div class="mt-4">
@@ -22,18 +22,18 @@
             <input type="password" name="password_confirmation" required class="block mt-1 w-full">
         </div>
 
+        <!-- ROLE SELECT -->
         <div class="mt-4">
-            <label>Select Role</label>
+            <label>Role</label>
             <select name="role" required class="block mt-1 w-full">
                 <option value="member">Member</option>
                 <option value="admin">Admin</option>
             </select>
         </div>
 
-        <div class="flex items-center justify-end mt-4">
-            <a href="{{ route('login') }}">Already registered?</a>
-
-            <button type="submit" style="margin-left:10px;">
+        <div class="mt-6">
+            <button type="submit"
+                style="width:100%; padding:10px; background:#2563eb; color:white;">
                 Register
             </button>
         </div>

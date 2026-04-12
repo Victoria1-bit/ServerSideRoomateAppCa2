@@ -1,46 +1,63 @@
 <x-guest-layout>
+
     <form method="POST" action="{{ route('login') }}">
         @csrf
 
+        <!-- Email -->
         <div>
             <label for="email">Email</label>
-            <input id="email" class="block mt-1 w-full" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username">
+            <input id="email" 
+                   type="email" 
+                   name="email" 
+                   value="{{ old('email') }}" 
+                   required 
+                   autofocus 
+                   class="block mt-1 w-full">
         </div>
 
+        <!-- Password -->
         <div class="mt-4">
             <label for="password">Password</label>
-            <input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password">
+            <input id="password" 
+                   type="password" 
+                   name="password" 
+                   required 
+                   class="block mt-1 w-full">
         </div>
 
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
+        <!-- Remember Me -->
+        <div class="mt-4">
+            <label>
+                <input type="checkbox" name="remember">
+                Remember Me
             </label>
         </div>
 
-        <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
-                </a>
-            @endif
+        <!-- BUTTONS -->
+        <div class="mt-6 flex flex-col gap-3">
 
-            <button type="submit" style="margin-left: 10px;">
+            <!-- LOGIN -->
+            <button type="submit" 
+                style="width: 100%; padding: 10px; background: #2563eb; color: white; border-radius: 6px;">
                 Log in
             </button>
+
+            <!-- CREATE ACCOUNT -->
+            <a href="{{ route('register') }}"
+                style="text-align: center; padding: 10px; background: #16a34a; color: white; border-radius: 6px; text-decoration: none;">
+                Create Account
+            </a>
+
+            <!-- GUEST LOGIN -->
+            <form method="POST" action="{{ route('guest.login') }}">
+                @csrf
+                <button type="submit"
+                    style="width: 100%; padding: 10px; background: #6b7280; color: white; border-radius: 6px;">
+                    Continue as Guest
+                </button>
+            </form>
+
         </div>
     </form>
 
-    <div class="mt-4">
-        <form method="POST" action="{{ route('guest.login') }}">
-            @csrf
-            <button type="submit" style="width: 100%; padding: 10px; background: #6b7280; color: white; border-radius: 6px;">
-                Continue as Guest
-            </button>
-        </form>
-    </div>
 </x-guest-layout>

@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Chore extends Model
 {
@@ -14,6 +14,7 @@ class Chore extends Model
         'assigned_to',
         'assigned_by',
         'status',
+        'due_date',
     ];
 
     public function assignedUser()
