@@ -13,9 +13,9 @@ class ChoreController extends Controller
         $user = auth()->user();
 
         if ($user->isAdmin()) {
-            $chores = Chore::with(['assignedUser', 'assignedBy'])->latest()->get();
+            $chores = Chore::with(['assignedUser', 'assignedByUser'])->latest()->get();
         } else {
-            $chores = Chore::with(['assignedUser', 'assignedBy'])
+            $chores = Chore::with(['assignedUser', 'assignedByUser'])
                 ->where('assigned_to', $user->id)
                 ->latest()
                 ->get();
@@ -27,11 +27,10 @@ class ChoreController extends Controller
     public function create()
     {
         if (!auth()->user()->isAdmin()) {
-            abort(403, 'Only admins can access the create chore page.');
+            abort(403, 'Only admins can create chores.');
         }
 
         $users = User::all();
-
         return view('chores.create', compact('users'));
     }
 
@@ -42,33 +41,58 @@ class ChoreController extends Controller
         }
 
         $request->validate([
-            'title' => 'required|string|max:255',
+            'title'       => 'required|string|max:255',
             'assigned_to' => 'required|exists:users,id',
         ]);
 
         Chore::create([
-            'title' => $request->title,
+            'title'       => $request->title,
             'assigned_to' => $request->assigned_to,
             'assigned_by' => auth()->id(),
-            'status' => 'pending',
+            'status'      => 'pending',
         ]);
 
         return redirect()->route('chores.index')->with('success', 'Chore created successfully.');
     }
 
-    public function complete(Chore $chore)
+    public function edit(Chore $chore)
     {
-        $chore->update([
-            'status' => 'completed'
+        if (!auth()->user()->isAdmin()) {
+            abort(403, 'Only admins can edit chores.');
+        }
+
+        $users = User::all();
+        return view('chores.edit', compact('chore', 'users'));
+    }
+
+    public function update(Request $request, Chore $chore)
+    {
+        if (!auth()->user()->isAdmin()) {
+            abort(403);
+        }
+
+        $request->validate([
+            'title'       => 'required|string|max:255',
+            'assigned_to' => 'required|exists:users,id',
         ]);
 
+        $chore->update([
+            'title'       => $request->title,
+            'assigned_to' => $request->assigned_to,
+        ]);
+
+        return redirect()->route('chores.index')->with('success', 'Chore updated successfully.');
+    }
+
+    public function complete(Chore $chore)
+    {
+        $chore->update(['status' => 'completed']);
         return redirect()->route('chores.index')->with('success', 'Chore marked as complete.');
     }
 
     public function destroy(Chore $chore)
     {
         $chore->delete();
-
         return redirect()->route('chores.index')->with('success', 'Chore deleted.');
     }
 }
