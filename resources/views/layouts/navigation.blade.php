@@ -3,6 +3,7 @@
     <div>
         <a href="{{ route('dashboard') }}">Dashboard</a>
         <a href="{{ route('chores.index') }}" style="margin-left:15px;">Chores</a>
+        <a href="{{ route('expenses.index') }}" style="margin-left:15px;">Expenses</a>
     </div>
 
     <div>
