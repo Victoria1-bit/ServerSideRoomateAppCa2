@@ -1,4 +1,4 @@
-<x-app-layout>
+﻿<x-app-layout>
     <div class="page-wrap">
         <h1 class="page-title">Add Expense</h1>
 
@@ -12,29 +12,76 @@
             </div>
         @endif
 
-        <form action="{{ route('expenses.store') }}" method="POST" id="createExpenseForm" novalidate class="card form-shell">
+        <form action="{{ route('expenses.store') }}" method="POST" class="card form-shell">
             @csrf
 
             <div class="form-grid">
                 <div>
                     <label class="form-label" for="title">Expense Title</label>
-                    <input type="text" name="title" id="title" value="{{ old('title') }}" required maxlength="255" class="form-input">
-                    <div class="form-help">Examples: Groceries, WiFi Bill, Cleaning Supplies</div>
-                    <span id="titleError" class="error-text" style="display:none;">Title is required.</span>
+                    <input type="text" name="title" id="title" value="{{ old('title') }}" class="form-input" required>
                 </div>
 
                 <div>
-                    <label class="form-label" for="amount">Amount (�)</label>
-                    <input type="number" name="amount" id="amount" value="{{ old('amount') }}" required step="0.01" min="0.01" class="form-input">
-                    <div class="form-help">Use the full amount paid.</div>
-                    <span id="amountError" class="error-text" style="display:none;">Please enter a valid amount greater than 0.</span>
+                    <label class="form-label" for="category">Category</label>
+                    <select name="category" id="category" class="form-select" required>
+                        @php
+                            $categories = ['Rent', 'Groceries', 'Utilities', 'Transport', 'Shared Items'];
+                        @endphp
+
+                        @foreach($categories as $category)
+                            <option value="{{ $category }}" {{ old('category') === $category ? 'selected' : '' }}>
+                                {{ $category }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div>
+                    <label class="form-label" for="amount">Amount (€)</label>
+                    <input type="number" name="amount" id="amount" step="0.01" min="0.01" value="{{ old('amount') }}" class="form-input" required>
+                </div>
+
+                <div>
+                    <label class="form-label" for="payment_status">Payment Status</label>
+                    <select name="payment_status" id="payment_status" class="form-select" required>
+                        <option value="pending" {{ old('payment_status') === 'pending' ? 'selected' : '' }}>Pending</option>
+                        <option value="paid" {{ old('payment_status') === 'paid' ? 'selected' : '' }}>Paid</option>
+                    </select>
                 </div>
 
                 <div>
                     <label class="form-label" for="description">Description</label>
-                    <textarea name="description" id="description" rows="4" maxlength="1000" class="form-textarea">{{ old('description') }}</textarea>
-                    <div class="form-help">Optional note, like what was bought or why it was needed.</div>
-                    <span id="descError" class="error-text" style="display:none;">Description cannot exceed 1000 characters.</span>
+                    <textarea name="description" id="description" rows="4" class="form-textarea">{{ old('description') }}</textarea>
+                </div>
+
+                <div>
+                    <label class="form-label" for="split_type">Split Type</label>
+                    <select name="split_type" id="split_type" class="form-select" onchange="toggleSelectedUsers()" required>
+                        <option value="all" {{ old('split_type') === 'all' ? 'selected' : '' }}>Split with everyone</option>
+                        <option value="selected" {{ old('split_type') === 'selected' ? 'selected' : '' }}>Split with selected roommates</option>
+                    </select>
+                </div>
+
+                <div id="selectedUsersWrapper" style="display: {{ old('split_type') === 'selected' ? 'block' : 'none' }};">
+                    <label class="form-label">Select Roommates</label>
+
+                    <div class="card-soft" style="padding:16px;">
+                        @foreach($users as $user)
+                            <label style="display:block; margin-bottom:8px;">
+                                <input
+                                    type="checkbox"
+                                    name="selected_users[]"
+                                    value="{{ $user->id }}"
+                                    {{ in_array($user->id, old('selected_users', [])) ? 'checked' : '' }}
+                                >
+                                {{ $user->name }}
+                            </label>
+                        @endforeach
+                    </div>
+
+                    @error('selected_users')
+                        <p class="error-text">{{ $message }}</p>
+                    @enderror
                 </div>
             </div>
 
@@ -46,43 +93,12 @@
     </div>
 
     <script>
-        document.getElementById('createExpenseForm').addEventListener('submit', function (e) {
-            let valid = true;
+        function toggleSelectedUsers() {
+            const splitType = document.getElementById('split_type').value;
+            const wrapper = document.getElementById('selectedUsersWrapper');
 
-            const title = document.getElementById('title');
-            const titleError = document.getElementById('titleError');
-            if (!title.value.trim()) {
-                titleError.style.display = 'block';
-                title.style.borderColor = '#dc2626';
-                valid = false;
-            } else {
-                titleError.style.display = 'none';
-                title.style.borderColor = '#cde5d5';
-            }
-
-            const amount = document.getElementById('amount');
-            const amountError = document.getElementById('amountError');
-            if (!amount.value || parseFloat(amount.value) <= 0) {
-                amountError.style.display = 'block';
-                amount.style.borderColor = '#dc2626';
-                valid = false;
-            } else {
-                amountError.style.display = 'none';
-                amount.style.borderColor = '#cde5d5';
-            }
-
-            const desc = document.getElementById('description');
-            const descError = document.getElementById('descError');
-            if (desc.value.length > 1000) {
-                descError.style.display = 'block';
-                desc.style.borderColor = '#dc2626';
-                valid = false;
-            } else {
-                descError.style.display = 'none';
-                desc.style.borderColor = '#cde5d5';
-            }
-
-            if (!valid) e.preventDefault();
-        });
+            wrapper.style.display = splitType === 'selected' ? 'block' : 'none';
+        }
     </script>
 </x-app-layout>
+

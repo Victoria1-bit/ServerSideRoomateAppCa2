@@ -1,4 +1,4 @@
-<x-app-layout>
+ï»¿<x-app-layout>
     <div class="page-wrap">
         <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; margin-bottom:20px;">
             <div>
@@ -25,7 +25,7 @@
 
             <div class="card expense-card">
                 <p class="stat-label">Total Spent</p>
-                <p class="stat-value money">€{{ number_format($total, 2) }}</p>
+                <p class="stat-value money">â‚¬{{ number_format($total, 2) }}</p>
             </div>
 
             <div class="card expense-card">
@@ -44,11 +44,18 @@
 
                         <p class="expense-meta" style="margin:0 0 8px;">
                             Added by <strong>{{ $expense->creator->name ?? 'Unknown' }}</strong>
-                            • {{ $expense->created_at->format('d M Y') }}
+                            â€¢ {{ $expense->created_at->format('d M Y') }}
                         </p>
 
                         <p style="margin:0 0 8px; color:#294637;">
                             <strong>Category:</strong> {{ $expense->category }}
+                        </p>
+
+                        <p style="margin:0 0 8px; color:#294637;">
+                            <strong>Payment Status:</strong>
+                            <span class="badge {{ $expense->payment_status === 'paid' ? 'badge-success' : 'badge-warning' }}">
+                                {{ ucfirst($expense->payment_status) }}
+                            </span>
                         </p>
 
                         <p style="margin:0 0 8px; color:#294637;">
@@ -83,7 +90,7 @@
                     </div>
 
                     <div class="expense-amount">
-                        €{{ number_format($expense->amount, 2) }}
+                        â‚¬{{ number_format($expense->amount, 2) }}
                     </div>
                 </div>
             @empty
@@ -98,3 +105,4 @@
         </div>
     </div>
 </x-app-layout>
+

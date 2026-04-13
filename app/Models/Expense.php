@@ -11,6 +11,7 @@ class Expense extends Model
         'title',
         'category',
         'amount',
+        'payment_status',
         'description',
         'split_type',
         'selected_users',

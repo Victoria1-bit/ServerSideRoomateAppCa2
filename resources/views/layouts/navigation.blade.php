@@ -1,4 +1,4 @@
-<nav class="topbar">
+﻿<nav class="topbar">
     <div class="topbar-inner">
         <div class="nav-group">
             <a href="{{ route('dashboard') }}"
@@ -42,3 +42,4 @@
         </div>
     </div>
 </nav>
+
