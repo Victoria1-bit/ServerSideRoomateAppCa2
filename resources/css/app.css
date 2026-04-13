@@ -440,20 +440,6 @@ a {
     margin-top: 14px;
 }
 
-.dashboard-tip {
-    margin-top: 20px;
-    padding: 18px 20px;
-    border-radius: 16px;
-    background: linear-gradient(135deg, #eefcf2, #f8fff9);
-    border: 1px solid var(--border);
-    color: #24513a;
-    box-shadow: var(--shadow-soft);
-}
-
-.dashboard-tip strong {
-    color: #143924;
-}
-
 @media (max-width: 640px) {
     .page-wrap {
         padding: 18px;

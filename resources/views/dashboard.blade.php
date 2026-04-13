@@ -115,12 +115,6 @@
                     </div>
                 </div>
             </div>
-
-            <div class="dashboard-tip">
-                <strong>Expenses workflow suggestion:</strong>
-                add expense categories next, like Rent, Groceries, Utilities, Transport, and Shared Items.
-                After that, the best upgrade is a “split between roommates” field so the app can show who owes what automatically.
-            </div>
         </div>
     </div>
 </x-app-layout>

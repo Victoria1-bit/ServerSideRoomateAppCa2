@@ -39,13 +39,27 @@
         <div class="expense-list">
             @forelse($expenses as $expense)
                 <div class="card expense-item">
-                    <div style="flex:1; min-width:240px;">
+                    <div style="flex:1; min-width:260px;">
                         <h3 style="margin:0 0 6px; font-size:1.2rem; font-weight:800;">{{ $expense->title }}</h3>
 
-                        <p class="expense-meta" style="margin:0 0 10px;">
+                        <p class="expense-meta" style="margin:0 0 8px;">
                             Added by <strong>{{ $expense->creator->name ?? 'Unknown' }}</strong>
                             • {{ $expense->created_at->format('d M Y') }}
                         </p>
+
+                        <p style="margin:0 0 8px; color:#294637;">
+                            <strong>Category:</strong> {{ $expense->category }}
+                        </p>
+
+                        <p style="margin:0 0 8px; color:#294637;">
+                            <strong>Split:</strong> {{ $expense->split_label }}
+                        </p>
+
+                        @if($expense->split_type === 'selected' && count($expense->selected_user_names))
+                            <p style="margin:0 0 10px; color:#294637;">
+                                <strong>Shared With:</strong> {{ implode(', ', $expense->selected_user_names) }}
+                            </p>
+                        @endif
 
                         <p style="margin:0; color:#294637;">
                             {{ $expense->description ?: 'No description added yet.' }}
@@ -81,12 +95,6 @@
                     </a>
                 </div>
             @endforelse
-        </div>
-
-        <div class="dashboard-tip">
-            <strong>Better workflow idea:</strong>
-            after adding an expense, the next screen should eventually ask whether it is shared by everyone or only selected roommates.
-            That one change would make this section way more useful.
         </div>
     </div>
 </x-app-layout>
