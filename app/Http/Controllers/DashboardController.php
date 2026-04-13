@@ -1,29 +1,27 @@
 <?php
- 
-// FILE: app/Http/Controllers/DashboardController.php
-// git add app/Http/Controllers/DashboardController.php
-// git commit -m "feat: add expense stats to dashboard controller"
- 
+
 namespace App\Http\Controllers;
- 
+
 use App\Models\Chore;
 use App\Models\Expense;
- 
+
 class DashboardController extends Controller
 {
     public function index()
     {
-        // Chore stats
-        $totalChores     = Chore::count();
+        $totalChores = Chore::count();
         $completedChores = Chore::where('status', 'completed')->count();
-        $pendingChores   = Chore::where('status', 'pending')->count();
-        $recentChores    = Chore::latest()->take(5)->get();
- 
-        // Expense stats
-        $totalExpenses       = Expense::count();
-        $totalAmountSpent    = Expense::sum('amount');
-        $recentExpenses      = Expense::with('creator')->latest()->take(5)->get();
- 
+        $pendingChores = Chore::where('status', 'pending')->count();
+        $recentChores = Chore::latest()->take(5)->get();
+
+        $totalExpenses = Expense::count();
+        $totalAmountSpent = (float) Expense::sum('amount');
+        $recentExpenses = Expense::with('creator')->latest()->take(5)->get();
+
+        $averageExpenseAmount = $totalExpenses > 0 ? $totalAmountSpent / $totalExpenses : 0;
+        $largestExpense = Expense::with('creator')->orderByDesc('amount')->first();
+        $latestExpense = Expense::with('creator')->latest()->first();
+
         return view('dashboard', compact(
             'totalChores',
             'completedChores',
@@ -31,8 +29,10 @@ class DashboardController extends Controller
             'recentChores',
             'totalExpenses',
             'totalAmountSpent',
-            'recentExpenses'
+            'recentExpenses',
+            'averageExpenseAmount',
+            'largestExpense',
+            'latestExpense'
         ));
     }
 }
- 
