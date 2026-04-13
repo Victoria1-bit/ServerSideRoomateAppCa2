@@ -8,15 +8,15 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('chores', function (Blueprint $table) {
-            $table->string('title')->after('id');
+        Schema::table('expenses', function (Blueprint $table) {
+            $table->string('payment_status')->default('pending')->after('amount');
         });
     }
 
     public function down(): void
     {
-        Schema::table('chores', function (Blueprint $table) {
-            $table->dropColumn('title');
+        Schema::table('expenses', function (Blueprint $table) {
+            $table->dropColumn('payment_status');
         });
     }
 };

@@ -1,4 +1,4 @@
-<x-app-layout>
+﻿<x-app-layout>
     <div style="padding: 20px;">
         <h1 style="font-size: 32px; font-weight: bold; margin-bottom: 20px;">Chores</h1>
 
