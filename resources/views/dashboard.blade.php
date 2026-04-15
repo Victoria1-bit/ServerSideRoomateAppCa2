@@ -1,195 +1,169 @@
 ﻿<x-app-layout>
-    <div class="page-wrap">
-        <h1 class="page-title">Dashboard</h1>
+    <!-- Wraps the page in the main app layout (navbar, styles, etc.) -->
 
-        <h2 class="section-title">Chore Overview</h2>
-        <div class="stat-grid">
-            <div class="card stat-card">
-                <p class="stat-label">Total Chores</p>
-                <p class="stat-value">{{ $totalChores }}</p>
-            </div>
+    <div style="padding: 20px;">
+        <!-- Main container for the dashboard -->
 
-            <div class="card stat-card">
-                <p class="stat-label">Completed</p>
-                <p class="stat-value success">{{ $completedChores }}</p>
-            </div>
+        <!-- PAGE TITLE -->
+        <h1 style="font-size: 32px; font-weight: bold; margin-bottom: 20px;">
+            Dashboard
+        </h1>
 
-            <div class="card stat-card">
-                <p class="stat-label">Pending</p>
-                <p class="stat-value warning">{{ $pendingChores }}</p>
-            </div>
-        </div>
+        <!-- ===================== TOP OVERVIEW SECTION ===================== -->
+        <!-- Uses a grid layout to display summary cards -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 30px;">
 
-        <h2 class="section-title">Expense Overview</h2>
-        <div class="stat-grid">
-            <div class="card stat-card">
-                <p class="stat-label">Total Expenses</p>
-                <p class="stat-value">{{ $totalExpenses }}</p>
-            </div>
+            <!-- ----------- CHORE OVERVIEW CARD ----------- -->
+            <div style="background: white; border: 1px solid #ddd; border-radius: 8px; padding: 20px;">
+                
+                <!-- Section title -->
+                <h2 style="font-size: 18px; margin-bottom: 10px;">Chore Overview</h2>
 
-            <div class="card stat-card">
-                <p class="stat-label">Total Spent</p>
-                <p class="stat-value money">€{{ number_format($totalAmountSpent, 2) }}</p>
-            </div>
+                <!-- Total chores count -->
+                <p><strong>Total Chores</strong></p>
+                <p style="font-size: 28px; margin: 0;">
+                    {{ $totalChores ?? 0 }}
+                </p>
 
-            <div class="card stat-card">
-                <p class="stat-label">Paid Expenses</p>
-                <p class="stat-value success">{{ $paidExpensesCount }}</p>
-            </div>
-
-            <div class="card stat-card">
-                <p class="stat-label">Pending Expenses</p>
-                <p class="stat-value warning">{{ $pendingExpensesCount }}</p>
-            </div>
-
-            <div class="card stat-card">
-                <p class="stat-label">Paid Amount</p>
-                <p class="stat-value success">€{{ number_format($paidExpensesTotal, 2) }}</p>
-            </div>
-
-            <div class="card stat-card">
-                <p class="stat-label">Pending Amount</p>
-                <p class="stat-value warning">€{{ number_format($pendingExpensesTotal, 2) }}</p>
-            </div>
-        </div>
-
-        <div class="content-grid">
-            <div class="card list-panel">
-                <div class="list-header">
-                    <h2 class="list-title">Recent Chores</h2>
-                    <a href="{{ route('chores.index') }}" class="list-link">View all →</a>
+                <!-- Completed chores -->
+                <div style="margin-top: 15px;">
+                    <p><strong>Completed</strong></p>
+                    <p style="font-size: 24px; margin: 0;">
+                        {{ $completedChores ?? 0 }}
+                    </p>
                 </div>
 
-                @forelse($recentChores as $chore)
-                    <div class="list-row">
-                        <span>{{ $chore->title }}</span>
-                        <span class="badge {{ $chore->status === 'completed' ? 'badge-success' : 'badge-warning' }}">
+                <!-- Pending chores -->
+                <div style="margin-top: 15px;">
+                    <p><strong>Pending</strong></p>
+                    <p style="font-size: 24px; margin: 0;">
+                        {{ $pendingChores ?? 0 }}
+                    </p>
+                </div>
+            </div>
+
+            <!-- ----------- EXPENSE OVERVIEW CARD ----------- -->
+            <div style="background: white; border: 1px solid #ddd; border-radius: 8px; padding: 20px;">
+                
+                <!-- Section title -->
+                <h2 style="font-size: 18px; margin-bottom: 10px;">Expense Overview</h2>
+
+                <!-- Total number of expenses -->
+                <p><strong>Total Expenses</strong></p>
+                <p style="font-size: 28px; margin: 0;">
+                    {{ $totalExpenses ?? 0 }}
+                </p>
+
+                <!-- Total money spent -->
+                <div style="margin-top: 15px;">
+                    <p><strong>Total Spent</strong></p>
+                    <p style="font-size: 24px; margin: 0;">
+                        €{{ number_format($totalSpent ?? 0, 2) }}
+                    </p>
+                </div>
+
+                <!-- Paid expenses count -->
+                <div style="margin-top: 15px;">
+                    <p><strong>Paid Expenses</strong></p>
+                    <p style="font-size: 24px; margin: 0;">
+                        {{ $paidExpenses ?? 0 }}
+                    </p>
+                </div>
+
+                <!-- Pending expenses count -->
+                <div style="margin-top: 15px;">
+                    <p><strong>Pending Expenses</strong></p>
+                    <p style="font-size: 24px; margin: 0;">
+                        {{ $pendingExpenses ?? 0 }}
+                    </p>
+                </div>
+
+                <!-- Total paid amount -->
+                <div style="margin-top: 15px;">
+                    <p><strong>Paid Amount</strong></p>
+                    <p style="font-size: 24px; margin: 0;">
+                        €{{ number_format($paidAmount ?? 0, 2) }}
+                    </p>
+                </div>
+
+                <!-- Total pending amount -->
+                <div style="margin-top: 15px;">
+                    <p><strong>Pending Amount</strong></p>
+                    <p style="font-size: 24px; margin: 0;">
+                        €{{ number_format($pendingAmount ?? 0, 2) }}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================== RECENT DATA SECTION ===================== -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
+
+            <!-- ----------- RECENT CHORES ----------- -->
+            <div style="background: white; border: 1px solid #ddd; border-radius: 8px; padding: 20px;">
+                
+                <!-- Title + link -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h2 style="font-size: 20px; margin: 0;">Recent Chores</h2>
+                    <!-- Link to full chore list -->
+                    <a href="{{ route('chores.index') }}" style="text-decoration: none; color: #2563eb;">
+                        View all →
+                    </a>
+                </div>
+
+                <!-- Loop through recent chores -->
+                @forelse($recentChores ?? [] as $chore)
+
+                    <div style="padding: 12px 0; border-bottom: 1px solid #eee;">
+                        <!-- Chore title -->
+                        <p style="margin: 0; font-weight: bold;">
+                            {{ $chore->title }}
+                        </p>
+
+                        <!-- Chore status -->
+                        <p style="margin: 5px 0 0 0;">
                             {{ ucfirst($chore->status) }}
-                        </span>
+                        </p>
                     </div>
+
                 @empty
-                    <p style="margin:0; color:#5f7a69;">No chores yet.</p>
+                    <!-- If no chores exist -->
+                    <p>No chores yet.</p>
                 @endforelse
             </div>
 
-            <div class="card list-panel">
-                <div class="list-header">
-                    <h2 class="list-title">Recent Expenses</h2>
-                    <a href="{{ route('expenses.index') }}" class="list-link">View all →</a>
+            <!-- ----------- RECENT EXPENSES ----------- -->
+            <div style="background: white; border: 1px solid #ddd; border-radius: 8px; padding: 20px;">
+                
+                <!-- Title + link -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h2 style="font-size: 20px; margin: 0;">Recent Expenses</h2>
+
+                    <!-- Link to full expense list -->
+                    <a href="{{ route('expenses.index') }}" style="text-decoration: none; color: #2563eb;">
+                        View all →
+                    </a>
                 </div>
 
-                @forelse($recentExpenses as $expense)
-                    <div class="list-row">
-                        <div>
-                            <div style="font-weight:700;">{{ $expense->title }}</div>
-                            <div class="expense-meta">
-                                {{ $expense->creator->name ?? 'Unknown' }} • {{ $expense->created_at->format('d M Y') }}
-                            </div>
-                        </div>
-                        <div style="text-align:right;">
-                            <div class="badge badge-info">€{{ number_format($expense->amount, 2) }}</div>
-                            <div style="margin-top:6px;">
-                                <span class="badge {{ $expense->payment_status === 'paid' ? 'badge-success' : 'badge-warning' }}">
-                                    {{ ucfirst($expense->payment_status) }}
-                                </span>
-                            </div>
-                        </div>
+                <!-- Loop through expenses -->
+                @forelse($recentExpenses ?? [] as $expense)
+
+                    <div style="padding: 12px 0; border-bottom: 1px solid #eee;">
+                        <!-- Expense title -->
+                        <p style="margin: 0; font-weight: bold;">
+                            {{ $expense->title }}
+                        </p>
+
+                        <!-- Expense amount -->
+                        <p style="margin: 5px 0 0 0;">
+                            €{{ number_format($expense->amount, 2) }}
+                        </p>
                     </div>
+
                 @empty
-                    <p style="margin:0; color:#5f7a69;">No expenses yet.</p>
+                    <!-- If no expenses exist -->
+                    <p>No expenses yet.</p>
                 @endforelse
-            </div>
-        </div>
-
-        <div class="content-grid" style="margin-top:20px;">
-            <div class="card list-panel">
-                <div class="list-header">
-                    <h2 class="list-title">Expense Highlights</h2>
-                </div>
-
-                <div class="list-row">
-                    <div>
-                        <div style="font-weight:700;">Largest Expense</div>
-                        <div class="expense-meta">
-                            {{ $largestExpense?->title ?? 'No expense yet' }}
-                            @if($largestExpense)
-                                • {{ $largestExpense->creator->name ?? 'Unknown' }}
-                            @endif
-                        </div>
-                    </div>
-                    <div style="font-weight:800; color:#1f7a4d;">
-                        {{ $largestExpense ? '€' . number_format($largestExpense->amount, 2) : '—' }}
-                    </div>
-                </div>
-
-                <div class="list-row">
-                    <div>
-                        <div style="font-weight:700;">Latest Expense</div>
-                        <div class="expense-meta">
-                            {{ $latestExpense?->title ?? 'No expense yet' }}
-                            @if($latestExpense)
-                                • {{ $latestExpense->created_at->format('d M Y') }}
-                            @endif
-                        </div>
-                    </div>
-                    <div style="font-weight:800; color:#1f7a4d;">
-                        {{ $latestExpense ? '€' . number_format($latestExpense->amount, 2) : '—' }}
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <h2 class="section-title" style="margin-top:28px;">History Summary</h2>
-        <div class="content-grid">
-            <div class="card list-panel">
-                <div class="list-header">
-                    <h2 class="list-title">Chores History</h2>
-                </div>
-
-                <div class="list-row">
-                    <span>This Week</span>
-                    <strong>{{ $weeklyChores }}</strong>
-                </div>
-
-                <div class="list-row">
-                    <span>This Month</span>
-                    <strong>{{ $monthlyChores }}</strong>
-                </div>
-
-                <div class="list-row">
-                    <span>This Year</span>
-                    <strong>{{ $yearlyChores }}</strong>
-                </div>
-            </div>
-
-            <div class="card list-panel">
-                <div class="list-header">
-                    <h2 class="list-title">Expenses History</h2>
-                </div>
-
-                <div class="list-row">
-                    <span>This Week</span>
-                    <div style="text-align:right;">
-                        <div><strong>{{ $weeklyExpensesCount }}</strong> expenses</div>
-                        <div class="expense-meta">€{{ number_format($weeklyExpensesTotal, 2) }}</div>
-                    </div>
-                </div>
-
-                <div class="list-row">
-                    <span>This Month</span>
-                    <div style="text-align:right;">
-                        <div><strong>{{ $monthlyExpensesCount }}</strong> expenses</div>
-                        <div class="expense-meta">€{{ number_format($monthlyExpensesTotal, 2) }}</div>
-                    </div>
-                </div>
-
-                <div class="list-row">
-                    <span>This Year</span>
-                    <div style="text-align:right;">
-                        <div><strong>{{ $yearlyExpensesCount }}</strong> expenses</div>
-                        <div class="expense-meta">€{{ number_format($yearlyExpensesTotal, 2) }}</div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
