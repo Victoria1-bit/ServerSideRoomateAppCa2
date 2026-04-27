@@ -1,56 +1,43 @@
-﻿```blade
-{{-- Wraps the page in the guest layout (used for login, register, etc.) --}}
-<x-guest-layout>
+﻿<x-guest-layout>
+    @if ($errors->any())
+        <div class="alert alert-error">
+            @foreach ($errors->all() as $error)
+                <p>{{ $error }}</p>
+            @endforeach
+        </div>
+    @endif
 
-    {{-- Registration form — submits new user details to the register route via POST --}}
-    <form method="POST" action="{{ route('register') }}">
-
-        {{-- CSRF token to protect against cross-site request forgery attacks --}}
+    <form method="POST" action="{{ route('register') }}" class="form">
         @csrf
 
-        {{-- Full name input --}}
-        <div>
-            <label>Name</label>
-            <input type="text" name="name" required class="block mt-1 w-full">
-        </div>
+        <label for="name">Name</label>
+        <input id="name" type="text" name="name" value="{{ old('name') }}" required autofocus>
 
-        {{-- Email input — must be unique, validated server-side in RegisterController --}}
-        <div class="mt-4">
-            <label>Email</label>
-            <input type="email" name="email" required class="block mt-1 w-full">
-        </div>
+        <label for="email">Email</label>
+        <input id="email" type="email" name="email" value="{{ old('email') }}" required>
 
-        {{-- Password input — must be at least 8 characters, validated server-side --}}
-        <div class="mt-4">
-            <label>Password</label>
-            <input type="password" name="password" required class="block mt-1 w-full">
-        </div>
+        <label for="household_code">Household Code</label>
+        <input
+            id="household_code"
+            type="text"
+            name="household_code"
+            value="{{ old('household_code') }}"
+            required
+            placeholder="Enter household code"
+        >
 
-        {{-- Password confirmation — must match the password field above
-             Laravel checks this automatically when 'confirmed' is used in validation --}}
-        <div class="mt-4">
-            <label>Confirm Password</label>
-            <input type="password" name="password_confirmation" required class="block mt-1 w-full">
-        </div>
+        <label for="password">Password</label>
+        <input id="password" type="password" name="password" required>
 
-        {{-- Role selector — lets the user register as either a regular member or an admin
-             Note: in production this should typically be restricted or removed to prevent self-assigning admin --}}
-        <div class="mt-4">
-            <label>Role</label>
-            <select name="role" required class="block mt-1 w-full">
-                <option value="member">Member</option>
-                <option value="admin">Admin</option>
-            </select>
-        </div>
+        <label for="password_confirmation">Confirm Password</label>
+        <input id="password_confirmation" type="password" name="password_confirmation" required>
 
-        {{-- Submit button to create the account --}}
-        <div class="mt-6">
-            <button type="submit"
-                style="width:100%; padding:10px; background:#2563eb; color:white;">
-                Register
-            </button>
-        </div>
-
+        <button type="submit" class="btn btn-primary" style="width:100%;">
+            Create Account
+        </button>
     </form>
+
+    <a href="{{ route('login') }}" class="btn btn-secondary" style="width:100%; margin-top:12px;">
+        Already have an account?
+    </a>
 </x-guest-layout>
-```

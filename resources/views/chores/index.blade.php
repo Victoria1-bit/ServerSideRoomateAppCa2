@@ -1,73 +1,72 @@
-﻿<x-app-layout>
-    <!-- Main container for the chores page -->
-    <div style="padding: 20px;">
+﻿@extends('layouts.app')
 
-        <!-- Page title -->
-        <h1 style="font-size: 32px; font-weight: bold; margin-bottom: 20px;">
-            Chores
-        </h1>
+@section('content')
+<div class="page-container">
+    <div class="page-header">
+        <div>
+            <h1>Chores</h1>
+            <p>Manage roommate tasks and responsibilities.</p>
+        </div>
 
-        <!-- Success message after actions like create, update, delete, or complete -->
-        @if(session('success'))
-            <div style="margin-bottom: 20px; padding: 12px; background: #d4edda; color: #155724; border-radius: 6px;">
-                {{ session('success') }}
-            </div>
+        @if(auth()->user()->isAdmin())
+            <a href="{{ route('chores.create') }}" class="btn btn-primary">+ Create Chore</a>
         @endif
+    </div>
 
-        <!-- Only admins can create chores -->
-        @if(auth()->check() && auth()->user()->isAdmin())
-            <div style="margin-bottom: 20px;">
-                <a href="{{ route('chores.create') }}"
-                   style="display: inline-block; padding: 10px 16px; background: #2563eb; color: white; text-decoration: none; border-radius: 6px;">
-                    + Create Chore
-                </a>
-            </div>
-        @endif
+    @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
 
-        <!-- Loop through chores -->
+    <div class="grid">
         @forelse($chores as $chore)
-            <div style="border: 1px solid #ccc; padding: 16px; margin-bottom: 16px; border-radius: 8px; background: white;">
+            <div class="card chore-card">
+                <div class="card-top">
+                    <h2>{{ $chore->title }}</h2>
 
-                <!-- Chore title -->
-                <h3 style="font-size: 24px; margin-bottom: 10px;">
-                    {{ $chore->title }}
-                </h3>
+                    <span class="badge {{ $chore->status === 'completed' ? 'badge-success' : 'badge-warning' }}">
+                        {{ ucfirst($chore->status) }}
+                    </span>
+                </div>
 
-                <!-- Chore details -->
-                <p style="margin: 6px 0;"><strong>Status:</strong> {{ $chore->status }}</p>
-                <p style="margin: 6px 0;"><strong>Due:</strong> {{ $chore->due_date ?? 'N/A' }}</p>
-                <p style="margin: 6px 0;"><strong>Assigned to:</strong> {{ $chore->assignedUser->name ?? 'N/A' }}</p>
-                <p style="margin: 6px 0;"><strong>Assigned by:</strong> {{ $chore->assignedByUser->name ?? 'N/A' }}</p>
+                <p><strong>Due:</strong> {{ $chore->due_date ?? 'No due date' }}</p>
+                <p><strong>Assigned to:</strong> {{ $chore->assignedUser->name ?? 'N/A' }}</p>
+                <p><strong>Assigned by:</strong> {{ $chore->assignedByUser->name ?? 'N/A' }}</p>
 
-                <!-- Action buttons -->
-                <div style="margin-top: 12px; display: flex; gap: 10px; flex-wrap: wrap;">
+                @if($chore->photo_description)
+                    <p class="description">
+                        <strong>Photo Description:</strong><br>
+                        {{ $chore->photo_description }}
+                    </p>
+                @endif
 
-                    <!-- Edit and Delete are admin only -->
-                    @if(auth()->check() && auth()->user()->isAdmin())
-                        <a href="{{ route('chores.edit', $chore->id) }}"
-                           style="padding: 6px 12px; background: orange; color: white; text-decoration: none; border-radius: 4px;">
+                <div class="actions">
+                    @if(auth()->user()->isAdmin())
+                        <a href="{{ route('chores.edit', $chore) }}" class="btn btn-small btn-warning">
                             Edit
                         </a>
 
-                        <form action="{{ route('chores.destroy', $chore->id) }}" method="POST" onsubmit="return confirm('Delete this chore?');">
+                        <form action="{{ route('chores.destroy', $chore) }}" method="POST">
                             @csrf
                             @method('DELETE')
 
-                            <button type="submit"
-                                    style="padding: 6px 12px; background: red; color: white; border: none; border-radius: 4px;">
+                            <button
+                                type="submit"
+                                class="btn btn-small btn-danger"
+                                onclick="return confirm('Delete this chore?')"
+                            >
                                 Delete
                             </button>
                         </form>
                     @endif
 
-                    <!-- Mark complete can be used on incomplete chores -->
                     @if($chore->status !== 'completed')
-                        <form action="{{ route('chores.complete', $chore->id) }}" method="POST">
+                        <form action="{{ route('chores.complete', $chore) }}" method="POST">
                             @csrf
                             @method('PATCH')
 
-                            <button type="submit"
-                                    style="padding: 6px 12px; background: green; color: white; border: none; border-radius: 4px;">
+                            <button type="submit" class="btn btn-small btn-success">
                                 Mark Complete
                             </button>
                         </form>
@@ -75,9 +74,10 @@
                 </div>
             </div>
         @empty
-            <!-- Message if no chores exist -->
-            <p>No chores found.</p>
+            <div class="card">
+                <p>No chores found.</p>
+            </div>
         @endforelse
-
     </div>
-</x-app-layout>
+</div>
+@endsection

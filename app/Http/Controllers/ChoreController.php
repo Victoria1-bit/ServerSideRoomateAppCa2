@@ -6,138 +6,104 @@ use App\Models\Chore;
 use App\Models\User;
 use Illuminate\Http\Request;
 
-// Controller responsible for handling all chore-related actions
-// Covers listing, creating, editing, completing, and deleting chores
 class ChoreController extends Controller
 {
-    // Shows the list of chores
-    // Admins see all chores, regular users only see chores assigned to them
     public function index()
     {
         $user = auth()->user();
 
-        if ($user->isAdmin()) {
-            // Admin: fetch every chore with the names of who it was assigned to and who assigned it
-            $chores = Chore::with(['assignedUser', 'assignedByUser'])->latest()->get();
-        } else {
-            // Regular user: only fetch chores where assigned_to matches their own ID
-            $chores = Chore::with(['assignedUser', 'assignedByUser'])
-                ->where('assigned_to', $user->id)
-                ->latest()
-                ->get();
-        }
+        $chores = Chore::with(['assignedUser', 'assignedByUser'])
+            ->when(!$user->isSuperAdmin(), function ($query) use ($user) {
+                $query->whereHas('assignedUser', function ($q) use ($user) {
+                    $q->where('household_id', $user->household_id);
+                });
+            })
+            ->latest()
+            ->get();
 
         return view('chores.index', compact('chores'));
     }
 
-    // Loads the form to create a new chore
-    // Blocked for non-admins — only admins should be able to assign chores
     public function create()
     {
-        if (!auth()->user()->isAdmin()) {
-            abort(403, 'Only admins can access the create chore page.');
-        }
+        abort_if(!auth()->user()->isAdmin(), 403);
 
-        // Pass all users to the view so the admin can pick who to assign the chore to
-        $users = User::all();
+        $users = auth()->user()->isSuperAdmin()
+            ? User::orderBy('name')->get()
+            : User::where('household_id', auth()->user()->household_id)->orderBy('name')->get();
 
         return view('chores.create', compact('users'));
     }
 
-    // Handles the form submission when creating a new chore
     public function store(Request $request)
     {
-        if (!auth()->user()->isAdmin()) {
-            abort(403, 'Only admins can create chores.');
-        }
+        abort_if(!auth()->user()->isAdmin(), 403);
 
-        // Validate the incoming form data before saving anything
-        $request->validate([
-            'title' => 'required|string|max:255',       // Title is mandatory
-            'assigned_to' => 'required|exists:users,id', // Must be a real user in the DB
-            'due_date' => 'nullable|date',               // Optional, but must be a valid date if provided
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'assigned_to' => 'required|exists:users,id',
+            'due_date' => 'nullable|date',
+            'photo_description' => 'nullable|string|max:500',
         ]);
 
-        // Create the chore record — status starts as 'pending' by default
-        // assigned_by is automatically set to whoever is logged in
         Chore::create([
-            'title' => $request->title,
-            'assigned_to' => $request->assigned_to,
+            'title' => $validated['title'],
+            'assigned_to' => $validated['assigned_to'],
             'assigned_by' => auth()->id(),
             'status' => 'pending',
-            'due_date' => $request->due_date,
+            'due_date' => $validated['due_date'] ?? null,
+            'photo_description' => $validated['photo_description'] ?? null,
         ]);
 
         return redirect()->route('chores.index')->with('success', 'Chore created successfully.');
     }
 
-    // Loads the edit form for an existing chore
-    // Only admins are allowed to edit chores
     public function edit(Chore $chore)
     {
-        if (!auth()->user()->isAdmin()) {
-            abort(403, 'Only admins can edit chores.');
-        }
+        abort_if(!auth()->user()->isAdmin(), 403);
 
-        // Pass all users so the admin can reassign the chore if needed
-        $users = User::all();
+        $users = auth()->user()->isSuperAdmin()
+            ? User::orderBy('name')->get()
+            : User::where('household_id', auth()->user()->household_id)->orderBy('name')->get();
 
         return view('chores.edit', compact('chore', 'users'));
     }
 
-    // Handles saving changes to an existing chore
     public function update(Request $request, Chore $chore)
     {
-        if (!auth()->user()->isAdmin()) {
-            abort(403, 'Only admins can update chores.');
-        }
+        abort_if(!auth()->user()->isAdmin(), 403);
 
-        // Same validation rules as store — title and assigned user are required
-        $request->validate([
+        $validated = $request->validate([
             'title' => 'required|string|max:255',
             'assigned_to' => 'required|exists:users,id',
             'due_date' => 'nullable|date',
+            'photo_description' => 'nullable|string|max:500',
         ]);
 
-        // Update only the editable fields — status and assigned_by are not changed here
-        $chore->update([
-            'title' => $request->title,
-            'assigned_to' => $request->assigned_to,
-            'due_date' => $request->due_date,
-        ]);
+        $chore->update($validated);
 
-        return redirect()->route('chores.index')->with('success', 'Chore updated.');
+        return redirect()->route('chores.index')->with('success', 'Chore updated successfully.');
     }
 
-    // Marks a chore as completed
-    // Admins can complete any chore; regular users can only complete chores assigned to them
     public function complete(Chore $chore)
     {
         $user = auth()->user();
 
-        // Block the action if the user is not an admin AND the chore doesn't belong to them
         if (!$user->isAdmin() && $chore->assigned_to != $user->id) {
-            abort(403, 'You can only complete your own chores.');
+            abort(403);
         }
 
-        // Flip the status to 'completed'
-        $chore->update([
-            'status' => 'completed',
-        ]);
+        $chore->update(['status' => 'completed']);
 
         return redirect()->route('chores.index')->with('success', 'Chore marked as complete.');
     }
 
-    // Permanently deletes a chore from the database
-    // Restricted to admins only
     public function destroy(Chore $chore)
     {
-        if (!auth()->user()->isAdmin()) {
-            abort(403, 'Only admins can delete chores.');
-        }
+        abort_if(!auth()->user()->isAdmin(), 403);
 
         $chore->delete();
 
-        return redirect()->route('chores.index')->with('success', 'Chore deleted.');
+        return redirect()->route('chores.index')->with('success', 'Chore deleted successfully.');
     }
 }
