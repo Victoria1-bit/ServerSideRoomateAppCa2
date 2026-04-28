@@ -813,3 +813,39 @@ a {
         width: 100%;
     }
 }
+
+.nav-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+.user-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #ffffff;
+    border: 1px solid #bbf7d0;
+    color: #14382b;
+    padding: 8px 14px 8px 8px;
+    border-radius: 999px;
+    font-weight: 800;
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.08);
+}
+
+.nav-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 0;
+    border: 2px solid #dcfce7;
+}
+
+.user-chip:hover {
+    background: #f0fdf4;
+    transform: translateY(-1px);
+}

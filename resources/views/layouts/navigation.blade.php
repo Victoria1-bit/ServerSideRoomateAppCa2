@@ -16,7 +16,7 @@
                 <a href="{{ route('expenses.index') }}">Expenses</a>
                 <a href="{{ route('profile.edit') }}">Profile</a>
 
-                <span class="user-chip">
+                <span class="user-chip">@if(Auth::user()->profile_photo)<img src="{{ asset('storage/' . Auth::user()->profile_photo) }}" class="nav-avatar" alt="Profile">@endif 
                     {{ Auth::user()->name }} ({{ Auth::user()->role === 'admin' ? 'HouseKeeper' : (Auth::user()->role ?? 'member') }})
                 </span>
 
@@ -28,3 +28,4 @@
         </div>
     </div>
 </nav>
+
