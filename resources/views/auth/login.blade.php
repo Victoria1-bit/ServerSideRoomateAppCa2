@@ -233,6 +233,11 @@
             </button>
         </form>
 
+                <div class="login-link" style="margin-top:18px;text-align:center;color:#64748b;font-size:14px;">
+            Don’t have an account?
+            <a href="{{ route('register') }}" style="color:#14382b;font-weight:800;text-decoration:none;">Create one</a>
+        </div>
+
         <div class="divider">or continue with</div>
 
         <div class="social-stack">
@@ -253,3 +258,4 @@
         </div>
     </div>
 </x-guest-layout>
+

@@ -13,14 +13,14 @@ class ChoreController extends Controller
     {
         $user = auth()->user();
 
-        if ($user->isAdmin()) {
-            $chores = Chore::with(['assignedUser', 'assignedByUser'])->where('house_id', auth()->user()->house_id)->latest()->get();
-        } else {
-            $chores = Chore::with(['assignedUser', 'assignedByUser'])
-                ->where('assigned_to', $user->id)
-                ->latest()
-                ->get();
+        if (!$user->house_id) {
+            return redirect()->route('choose.role')->with('error', 'Join a house first.');
         }
+
+        $chores = Chore::with(['assignedUser', 'assignedByUser'])
+            ->where('house_id', $user->house_id)
+            ->latest()
+            ->get();
 
         return view('chores.index', compact('chores'));
     }
@@ -130,4 +130,5 @@ class ChoreController extends Controller
         return redirect()->route('chores.index')->with('success', 'Chore deleted.');
     }
 }
+
 
