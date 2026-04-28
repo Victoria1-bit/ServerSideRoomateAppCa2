@@ -5,6 +5,8 @@ use App\Http\Controllers\ChoreController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RoleChoiceController;
+use App\Http\Controllers\HouseController;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -49,4 +51,20 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/choose-role', [RoleChoiceController::class, 'index'])->name('choose.role');
+    Route::post('/choose-role/housekeeper', [RoleChoiceController::class, 'becomeHousekeeper'])->name('choose.housekeeper');
+    Route::post('/choose-role/member', [RoleChoiceController::class, 'becomeMember'])->name('choose.member');
+
+    Route::get('/house/create', [HouseController::class, 'create'])->name('house.create');
+    Route::post('/house', [HouseController::class, 'store'])->name('house.store');
+    Route::get('/house', [HouseController::class, 'show'])->name('house.show');
+    Route::post('/house/invite', [HouseController::class, 'invite'])->name('house.invite');
+    Route::patch('/house/member/{userId}/remove', [HouseController::class, 'removeMember'])->name('house.member.remove');
+
+    Route::get('/join-house', [HouseController::class, 'join'])->name('house.join');
+    Route::post('/join-house', [HouseController::class, 'joinWithCode'])->name('house.join.submit');
+});
 require __DIR__.'/auth.php';
+

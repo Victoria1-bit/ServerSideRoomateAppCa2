@@ -13,7 +13,7 @@
             @auth
                 <a href="{{ route('dashboard') }}">Dashboard</a>
                 <a href="{{ route('chores.index') }}">Chores</a>
-                <a href="{{ route('expenses.index') }}">Expenses</a>
+                <a href="{{ route('expenses.index') }}">Expenses</a><a href="{{ route('house.show') }}">My House</a>
                 <a href="{{ route('profile.edit') }}">Profile</a>
 
                 <span class="user-chip">@if(Auth::user()->profile_photo)<img src="{{ asset('storage/' . Auth::user()->profile_photo) }}" class="nav-avatar" alt="Profile">@endif 
@@ -28,4 +28,5 @@
         </div>
     </div>
 </nav>
+
 

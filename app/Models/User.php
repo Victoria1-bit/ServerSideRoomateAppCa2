@@ -16,6 +16,7 @@ class User extends Authenticatable
         'password',
         'role',
         'profile_photo',
+        'house_id',
         'provider',
         'provider_id',
         'email_verified_at',
@@ -39,4 +40,5 @@ class User extends Authenticatable
         return strtolower($this->role) === 'admin';
     }
 }
+
 
