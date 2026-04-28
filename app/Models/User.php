@@ -15,12 +15,23 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'provider',
+        'provider_id',
+        'email_verified_at',
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
+    }
 
     public function isAdmin()
     {

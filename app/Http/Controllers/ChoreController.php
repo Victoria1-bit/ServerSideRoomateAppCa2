@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Chore;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ChoreController extends Controller
 {
@@ -31,6 +32,7 @@ class ChoreController extends Controller
         }
 
         $users = User::all();
+
         return view('chores.create', compact('users'));
     }
 
@@ -41,15 +43,25 @@ class ChoreController extends Controller
         }
 
         $request->validate([
-            'title'       => 'required|string|max:255',
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string|max:2000',
             'assigned_to' => 'required|exists:users,id',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
         ]);
 
+        $imagePath = null;
+
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('chores', 'public');
+        }
+
         Chore::create([
-            'title'       => $request->title,
+            'title' => $request->title,
+            'description' => $request->description,
+            'image_path' => $imagePath,
             'assigned_to' => $request->assigned_to,
             'assigned_by' => auth()->id(),
-            'status'      => 'pending',
+            'status' => 'pending',
         ]);
 
         return redirect()->route('chores.index')->with('success', 'Chore created successfully.');
@@ -62,6 +74,7 @@ class ChoreController extends Controller
         }
 
         $users = User::all();
+
         return view('chores.edit', compact('chore', 'users'));
     }
 
@@ -72,12 +85,26 @@ class ChoreController extends Controller
         }
 
         $request->validate([
-            'title'       => 'required|string|max:255',
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string|max:2000',
             'assigned_to' => 'required|exists:users,id',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
         ]);
 
+        $imagePath = $chore->image_path;
+
+        if ($request->hasFile('image')) {
+            if ($chore->image_path) {
+                Storage::disk('public')->delete($chore->image_path);
+            }
+
+            $imagePath = $request->file('image')->store('chores', 'public');
+        }
+
         $chore->update([
-            'title'       => $request->title,
+            'title' => $request->title,
+            'description' => $request->description,
+            'image_path' => $imagePath,
             'assigned_to' => $request->assigned_to,
         ]);
 
@@ -87,12 +114,18 @@ class ChoreController extends Controller
     public function complete(Chore $chore)
     {
         $chore->update(['status' => 'completed']);
+
         return redirect()->route('chores.index')->with('success', 'Chore marked as complete.');
     }
 
     public function destroy(Chore $chore)
     {
+        if ($chore->image_path) {
+            Storage::disk('public')->delete($chore->image_path);
+        }
+
         $chore->delete();
+
         return redirect()->route('chores.index')->with('success', 'Chore deleted.');
     }
 }
