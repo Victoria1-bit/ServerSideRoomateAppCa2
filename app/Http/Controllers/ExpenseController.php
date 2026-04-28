@@ -10,7 +10,7 @@ class ExpenseController extends Controller
 {
     public function index()
     {
-        $expenses = Expense::with('creator')->latest()->get();
+        $expenses = Expense::with('creator')->where('house_id', auth()->user()->house_id)->latest()->get();
         $total = (float) $expenses->sum('amount');
 
         return view('expenses.index', compact('expenses', 'total'));
@@ -43,6 +43,7 @@ class ExpenseController extends Controller
         }
 
         Expense::create([
+            'house_id' => auth()->user()->house_id,
             'title' => $validated['title'],
             'category' => $validated['category'],
             'amount' => $validated['amount'],
@@ -106,3 +107,4 @@ class ExpenseController extends Controller
         return redirect()->route('expenses.index')->with('success', 'Expense deleted successfully.');
     }
 }
+

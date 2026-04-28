@@ -8,6 +8,7 @@ use App\Models\User;
 class Expense extends Model
 {
     protected $fillable = [
+        'house_id',
         'title',
         'category',
         'amount',
@@ -46,3 +47,4 @@ class Expense extends Model
             ->toArray();
     }
 }
+

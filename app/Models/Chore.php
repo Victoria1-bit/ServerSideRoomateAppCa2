@@ -10,6 +10,7 @@ class Chore extends Model
     use HasFactory;
 
     protected $fillable = [
+        'house_id',
         'title',
         'description',
         'image_path',
@@ -28,3 +29,4 @@ class Chore extends Model
         return $this->belongsTo(User::class, 'assigned_by');
     }
 }
+
