@@ -692,3 +692,124 @@ a {
         align-items: flex-start;
     }
 }
+
+.main-nav {
+    background: #ffffff;
+    border-bottom: 1px solid #dbe7df;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+
+.nav-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.nav-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: #14382b;
+    font-weight: 800;
+    font-size: 18px;
+    text-decoration: none;
+}
+
+.nav-brand img {
+    width: 42px;
+    height: 42px;
+    object-fit: contain;
+}
+
+.nav-menu {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.nav-menu a {
+    color: #14382b;
+    font-weight: 700;
+    text-decoration: none;
+    padding: 9px 12px;
+    border-radius: 10px;
+}
+
+.nav-menu a:hover {
+    background: #ecfdf5;
+}
+
+.user-chip {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    color: #14382b;
+    padding: 10px 14px;
+    border-radius: 999px;
+    font-weight: 800;
+}
+
+.logout-btn {
+    background: #dc2626;
+    color: white;
+    border: none;
+    padding: 9px 13px;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.hamburger-btn {
+    display: none;
+    background: #14382b;
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    padding: 9px 13px;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+@media (max-width: 900px) {
+    .nav-inner {
+        align-items: flex-start;
+        padding: 14px 18px;
+        flex-wrap: wrap;
+    }
+
+    .hamburger-btn {
+        display: inline-flex;
+        margin-left: auto;
+    }
+
+    .nav-menu {
+        display: none;
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        padding-top: 14px;
+    }
+
+    .nav-menu.show {
+        display: flex;
+    }
+
+    .nav-menu a,
+    .logout-btn,
+    .user-chip {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+        box-sizing: border-box;
+    }
+
+    .nav-menu form {
+        width: 100%;
+    }
+}

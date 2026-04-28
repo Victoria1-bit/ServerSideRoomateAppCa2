@@ -1,49 +1,30 @@
-<nav class="topbar">
-    <div class="topbar-inner">
-        <div class="nav-group">
-            <a href="{{ route('dashboard') }}"
-               class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
-                Dashboard
-            </a>
+<nav class="main-nav">
+    <div class="nav-inner">
+        <a href="{{ route('dashboard') }}" class="nav-brand">
+            <img src="{{ asset('images/logo.png') }}" alt="Logo">
+            <span>Roommate Hub</span>
+        </a>
 
-            <a href="{{ route('chores.index') }}"
-               class="nav-link {{ request()->routeIs('chores.*') ? 'active' : '' }}">
-                Chores
-            </a>
+        <button class="hamburger-btn" type="button" onclick="document.querySelector('.nav-menu').classList.toggle('show')">
+            ☰
+        </button>
 
-            <a href="{{ route('expenses.index') }}"
-               class="nav-link {{ request()->routeIs('expenses.*') ? 'active' : '' }}">
-                Expenses
-            </a>
-        </div>
-
-        <div class="user-group">
+        <div class="nav-menu">
             @auth
+                <a href="{{ route('dashboard') }}">Dashboard</a>
+                <a href="{{ route('chores.index') }}">Chores</a>
+                <a href="{{ route('expenses.index') }}">Expenses</a>
+                <a href="{{ route('profile.edit') }}">Profile</a>
+
                 <span class="user-chip">
-                    {{ Auth::user()->name }} ({{ Auth::user()->role ?? 'member' }})
+                    {{ Auth::user()->name }} ({{ Auth::user()->role === 'admin' ? 'HouseKeeper' : (Auth::user()->role ?? 'member') }})
                 </span>
 
-                <a href="{{ route('profile.edit') }}"
-                   class="btn btn-ghost">
-                    Profile
-                </a>
-
-                <form method="POST" action="{{ route('logout') }}" style="display:inline;">
+                <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" class="btn btn-danger">
-                        Logout
-                    </button>
+                    <button type="submit" class="logout-btn">Logout</button>
                 </form>
             @endauth
-
-            @guest
-                <a href="{{ route('login') }}" class="btn btn-primary">Login</a>
-            @endguest
         </div>
     </div>
 </nav>
-
-
-
-
-

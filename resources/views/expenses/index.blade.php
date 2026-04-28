@@ -1,108 +1,221 @@
-﻿<x-app-layout>
-    <div class="page-wrap">
-        <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; margin-bottom:20px;">
+<x-app-layout>
+    <div class="expenses-page">
+
+        <div class="expenses-header">
             <div>
-                <h1 class="page-title" style="margin-bottom:6px;">Shared Expenses</h1>
-                <p style="margin:0; color:#5f7a69;">Track what the house is spending together.</p>
+                <h1>Expenses</h1>
+                <p>Track shared costs, payments, and splits.</p>
             </div>
 
-            <a href="{{ route('expenses.create') }}" class="btn btn-primary">
-                + Add Expense
-            </a>
+            @if(auth()->user()->role === 'admin')
+                <a href="{{ route('expenses.create') }}" class="expenses-create-btn">+ Add Expense</a>
+            @endif
         </div>
 
-        @if(session('success'))
-            <div class="flash-success">
-                {{ session('success') }}
-            </div>
-        @endif
-
-        <div class="expense-summary">
-            <div class="card expense-card">
-                <p class="stat-label">Total Entries</p>
-                <p class="stat-value">{{ $expenses->count() }}</p>
-            </div>
-
-            <div class="card expense-card">
-                <p class="stat-label">Total Spent</p>
-                <p class="stat-value money">€{{ number_format($total, 2) }}</p>
-            </div>
-
-            <div class="card expense-card">
-                <p class="stat-label">Latest Added</p>
-                <p class="stat-value" style="font-size:1.2rem;">
-                    {{ $expenses->first()?->title ?? 'No expenses yet' }}
-                </p>
-            </div>
-        </div>
-
-        <div class="expense-list">
+        <div class="expenses-grid">
             @forelse($expenses as $expense)
-                <div class="card expense-item">
-                    <div style="flex:1; min-width:260px;">
-                        <h3 style="margin:0 0 6px; font-size:1.2rem; font-weight:800;">{{ $expense->title }}</h3>
+                <div class="expense-card">
 
-                        <p class="expense-meta" style="margin:0 0 8px;">
-                            Added by <strong>{{ $expense->creator->name ?? 'Unknown' }}</strong>
-                            • {{ $expense->created_at->format('d M Y') }}
-                        </p>
-
-                        <p style="margin:0 0 8px; color:#294637;">
-                            <strong>Category:</strong> {{ $expense->category }}
-                        </p>
-
-                        <p style="margin:0 0 8px; color:#294637;">
-                            <strong>Payment Status:</strong>
-                            <span class="badge {{ $expense->payment_status === 'paid' ? 'badge-success' : 'badge-warning' }}">
-                                {{ ucfirst($expense->payment_status) }}
-                            </span>
-                        </p>
-
-                        <p style="margin:0 0 8px; color:#294637;">
-                            <strong>Split:</strong> {{ $expense->split_label }}
-                        </p>
-
-                        @if($expense->split_type === 'selected' && count($expense->selected_user_names))
-                            <p style="margin:0 0 10px; color:#294637;">
-                                <strong>Shared With:</strong> {{ implode(', ', $expense->selected_user_names) }}
+                    <div class="expense-top">
+                        <div>
+                            <h3>{{ $expense->title }}</h3>
+                            <p class="expense-meta">
+                                Added by <strong>{{ $expense->creator->name ?? 'Unknown' }}</strong>
+                                • {{ $expense->created_at->format('d M Y') }}
                             </p>
-                        @endif
+                        </div>
 
-                        <p style="margin:0; color:#294637;">
-                            {{ $expense->description ?: 'No description added yet.' }}
-                        </p>
+                        <div class="expense-amount">
+                            €{{ number_format($expense->amount, 2) }}
+                        </div>
+                    </div>
 
-                        @if(auth()->user()->role === 'admin' || $expense->created_by === auth()->id())
-                            <div class="inline-actions">
-                                <a href="{{ route('expenses.edit', $expense) }}" class="btn btn-warning">
-                                    Edit
-                                </a>
-
-                                <form action="{{ route('expenses.destroy', $expense) }}" method="POST" onsubmit="return confirm('Delete this expense?');" style="margin:0;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger">
-                                        Delete
-                                    </button>
-                                </form>
+                    <div class="expense-body">
+                        <div class="expense-left">
+                            <div><span>Category</span><strong>{{ $expense->category }}</strong></div>
+                            <div>
+                                <span>Status</span>
+                                <strong class="badge {{ $expense->payment_status === 'paid' ? 'paid' : 'pending' }}">
+                                    {{ ucfirst($expense->payment_status) }}
+                                </strong>
                             </div>
+                        </div>
+
+                        <div class="expense-right">
+                            <div><span>Split</span><strong>{{ $expense->split_type }}</strong></div>
+                            <div><span>Shared With</span><strong>{{ $expense->shared_with }}</strong></div>
+                        </div>
+                    </div>
+
+                    @if($expense->description)
+                        <p class="expense-description">{{ $expense->description }}</p>
+                    @endif
+
+                    <div class="expense-actions">
+                        @if(auth()->user()->role === 'admin')
+                            <a href="{{ route('expenses.edit', $expense) }}" class="btn edit">Edit</a>
+                        @endif
+
+                        @if(auth()->user()->role === 'admin')
+                            <form action="{{ route('expenses.destroy', $expense) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn delete">Delete</button>
+                            </form>
                         @endif
                     </div>
 
-                    <div class="expense-amount">
-                        €{{ number_format($expense->amount, 2) }}
-                    </div>
                 </div>
             @empty
-                <div class="card empty-state">
-                    <h3 style="margin:0 0 10px; font-size:1.2rem; color:#1c402d;">No expenses yet</h3>
-                    <p style="margin:0 0 14px;">Start with rent, groceries, or utility bills.</p>
-                    <a href="{{ route('expenses.create') }}" class="btn btn-primary">
-                        Add your first expense
-                    </a>
-                </div>
+                <p>No expenses found.</p>
             @endforelse
         </div>
+
     </div>
+
+    <style>
+        .expenses-page {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        .expenses-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .expenses-header h1 {
+            margin: 0;
+            font-size: 30px;
+            font-weight: 800;
+        }
+
+        .expenses-header p {
+            margin: 4px 0 0;
+            color: #64748b;
+        }
+
+        .expenses-create-btn {
+            background: #14382b;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .expenses-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 22px;
+        }
+
+        .expense-card {
+            background: white;
+            border-radius: 20px;
+            padding: 22px;
+            border: 1px solid #dbe7df;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+
+        .expense-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .expense-top h3 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .expense-meta {
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .expense-amount {
+            font-size: 22px;
+            font-weight: 800;
+            color: #166534;
+        }
+
+        .expense-body {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 14px;
+        }
+
+        .expense-body div span {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .expense-body strong {
+            font-size: 14px;
+        }
+
+        .expense-left,
+        .expense-right {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .badge {
+            padding: 5px 10px;
+            border-radius: 999px;
+        }
+
+        .badge.paid {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .badge.pending {
+            background: #ffedd5;
+            color: #9a3412;
+        }
+
+        .expense-description {
+            color: #475569;
+            margin: 10px 0;
+        }
+
+        .expense-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn {
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-weight: 700;
+            color: white;
+            border: none;
+        }
+
+        .btn.edit {
+            background: #f59e0b;
+        }
+
+        .btn.delete {
+            background: #dc2626;
+        }
+
+        @media (max-width: 900px) {
+            .expenses-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </x-app-layout>
 
